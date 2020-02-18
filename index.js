@@ -17,8 +17,8 @@ const {allowInsecurePrototypeAccess} = require('@handlebars/allow-prototype-acce
 const User = require('./models/user');
 const varMiddleware = require('./middleware/variables');
 const userMiddleware = require('./middleware/user');
+const keys = require('./keys');
 
-const MONGODB_URI = `mongodb+srv://Ivan:sofebo39@cluster0-2gt0p.mongodb.net/shop`;
 const app = express(); // запуск сервера
 
 const hbs = exphbs.create({
@@ -29,7 +29,7 @@ const hbs = exphbs.create({
 
 const store = new MongoSession({
     collection: 'sessions',
-    uri: MONGODB_URI
+    uri: keys.MONGODB_URI
 });
 
 app.engine('hbs', hbs.engine);
@@ -49,7 +49,7 @@ app.set('views', 'views');
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(express.urlencoded({extended: true}));
 app.use(session({
-    secret: 'some secret session',
+    secret: keys.SESSION_SECRET,
     resave: false,
     saveUninitialized: false,
     store: store
@@ -73,7 +73,7 @@ const PORT = process.env.PORT || 3000; // динамический порт
 
 async function start() {
     try {
-        await mongoose.connect(MONGODB_URI, {useNewUrlParser: true, useUnifiedTopology: true, useFindAndModify: false});
+        await mongoose.connect(keys.MONGODB_URI, {useNewUrlParser: true, useUnifiedTopology: true, useFindAndModify: false});
 
         // const candidate = await User.findOne();
         //
